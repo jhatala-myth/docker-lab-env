@@ -1,0 +1,9 @@
+authorize {
+    ldap
+}
+
+authenticate {
+    Auth-Type LDAP {
+        ldap
+    }
+}

@@ -1,0 +1,12 @@
+ldap {
+    server = 'ldap.example.com'
+    identity = 'cn=admin,dc=example,dc=com'
+    password = 'admin_password'
+    basedn = 'dc=example,dc=com'
+    filter = '(uid=%{Stripped-User-Name:-%{User-Name}})'
+    base_filter = "(objectClass=posixAccount)"
+    start_tls = yes
+    tls {
+        ca_cert = /etc/ssl/certs/ca-certificates.crt
+    }
+}
