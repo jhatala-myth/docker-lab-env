@@ -1,0 +1,16 @@
+version: '3.3'
+# https://github.com/rroemhild/docker-test-openldap/tree/master
+services:
+  ldap:
+    container_name: server-ldap
+    image: rroemhild/test-openldap
+    environment:
+      LDAP_FORCE_STARTTLS: "true"
+      LDAP_DOMAIN: "customdomain.com"
+      LDAP_BASEDN: "dc=customdomain,dc=com"
+      LDAP_ORGANISATION: "Custom Domain, Inc."
+      LDAP_BINDDN: "cn=admin,dc=customdomain,dc=com"
+    ports:
+      - '389:10389'
+      - '636:10636'
+
