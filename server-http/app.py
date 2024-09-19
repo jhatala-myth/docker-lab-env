@@ -1,3 +1,5 @@
+from crypt import methods
+
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 
@@ -11,14 +13,11 @@ users = {
     "admin": "secret",
     "user": "password"
 }
-
-# Static username and password
-USERNAME = 'admin'
-PASSWORD = 'password'
+api_token = 'Iephai6Uliechee9ahR7zo2u'
 
 @auth.verify_password
 def verify_password(username, password):
-    if username in users and users[username] == password:
+    if username in users.keys() and users[username] == password:
         session['username'] = username
         return username
     return None
@@ -45,12 +44,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        if username == USERNAME and password == PASSWORD:
-            return "Logged in successfully!"
+        if username in users.keys():
+            if users[username] == password:
+                return "Logged in successfully!"
         else:
             flash("Invalid username or password")
 
     return render_template('login.html')
+
+@app.route('/api', methods=['POST'])
+def api():
+    pass
 
 @app.errorhandler(401)
 def unauthorized(error):
