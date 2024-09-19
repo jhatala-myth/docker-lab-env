@@ -15,7 +15,6 @@ users = {
     "admin": "secret",
     "user": "password"
 }
-api_token = 'Iephai6Uliechee9ahR7zo2u'
 
 @auth.verify_password
 def verify_password(username, password):
@@ -24,11 +23,11 @@ def verify_password(username, password):
         return username
     return None
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def public_route():
-    return jsonify({"message": "This is a public route"})
+    return jsonify({"message": "This is a public page"}), 200
 
-@app.route('/protected', methods=['GET'])
+@app.route('/protected', methods=['GET', 'POST'])
 @auth.login_required
 def protected_route():
     user = auth.current_user()
@@ -38,7 +37,7 @@ def protected_route():
         "remote_addr": request.remote_addr,
         "user_agent": request.user_agent.string
     }
-    return jsonify({"message": f"Hello, {user}! This is a protected route.", "session_info": session_info})
+    return jsonify({"message": f"Hello, {user}! This is a protected page.", "session_info": session_info}), 200
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,19 +51,19 @@ def login():
         else:
             flash("Invalid username or password")
 
-    return render_template('login.html')
+    return render_template('login.html'), 200
 
 @app.route('/api', methods=['GET', 'POST'])
 def print_request_info():
     api_output = {}
 
-    api_output.update({'Header': json.dumps(dict(request.headers.items()), indent=2) })
-    api_output.update({'GET': json.dumps(dict(request.args.items()), indent=2) })
-    api_output.update({'POST': json.dumps(dict(request.form.items()), indent=2) })
+    api_output.update({'Header': dict(request.headers) })
+    api_output.update({'GET': dict(request.args) })
+    api_output.update({'POST': dict(request.form) })
     if request.is_json:
-        api_output.update({'JSON Data': json.dumps(dict(request.get_json()), indent=2) })
-    api_output.update({'Session Data': json.dumps(dict(session.items()), indent=2) })
-    return jsonify({"message": api_output})
+        api_output.update({'JSON Data': dict(request.get_json()) })
+    api_output.update({'Session Data': dict(session) })
+    return jsonify({"message": api_output}), 200
 
 @app.errorhandler(401)
 def unauthorized(error):
