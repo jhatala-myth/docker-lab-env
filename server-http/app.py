@@ -52,9 +52,40 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/api', methods=['POST'])
-def api():
-    pass
+@app.route('/api', methods=['GET', 'POST'])
+def print_request_info():
+    # Printing Headers
+    headers = request.headers
+    print("Headers:")
+    for header, value in headers.items():
+        print(f"{header}: {value}")
+
+    # Printing Query Parameters (for GET requests)
+    print("\nQuery Parameters (GET):")
+    query_params = request.args
+    for param, value in query_params.items():
+        print(f"{param}: {value}")
+
+    # Printing Form Data (for POST requests)
+    if request.method == 'POST':
+        print("\nForm Data (POST):")
+        form_data = request.form
+        for field, value in form_data.items():
+            print(f"{field}: {value}")
+
+    # Printing JSON Data (if available)
+    if request.is_json:
+        print("\nJSON Data:")
+        json_data = request.get_json()
+        print(json_data)
+
+    # Printing Session Data (if available)
+    print("\nSession Data:")
+    for key, value in session.items():
+        print(f"{key}: {value}")
+
+    # Return a simple response
+    return jsonify({"message": "Request info printed to console"})
 
 @app.errorhandler(401)
 def unauthorized(error):
