@@ -2,9 +2,11 @@ from crypt import methods
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_httpauth import HTTPBasicAuth
+import json
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 auth = HTTPBasicAuth()
 
@@ -54,38 +56,15 @@ def login():
 
 @app.route('/api', methods=['GET', 'POST'])
 def print_request_info():
-    # Printing Headers
-    headers = request.headers
-    print("Headers:")
-    for header, value in headers.items():
-        print(f"{header}: {value}")
+    api_output = {}
 
-    # Printing Query Parameters (for GET requests)
-    print("\nQuery Parameters (GET):")
-    query_params = request.args
-    for param, value in query_params.items():
-        print(f"{param}: {value}")
-
-    # Printing Form Data (for POST requests)
-    if request.method == 'POST':
-        print("\nForm Data (POST):")
-        form_data = request.form
-        for field, value in form_data.items():
-            print(f"{field}: {value}")
-
-    # Printing JSON Data (if available)
+    api_output.update({'Header': json.dumps(dict(request.headers.items()), indent=2) })
+    api_output.update({'GET': json.dumps(dict(request.args.items()), indent=2) })
+    api_output.update({'POST': json.dumps(dict(request.form.items()), indent=2) })
     if request.is_json:
-        print("\nJSON Data:")
-        json_data = request.get_json()
-        print(json_data)
-
-    # Printing Session Data (if available)
-    print("\nSession Data:")
-    for key, value in session.items():
-        print(f"{key}: {value}")
-
-    # Return a simple response
-    return jsonify({"message": "Request info printed to console"})
+        api_output.update({'JSON Data': json.dumps(dict(request.get_json()), indent=2) })
+    api_output.update({'Session Data': json.dumps(dict(session.items()), indent=2) })
+    return jsonify({"message": api_output})
 
 @app.errorhandler(401)
 def unauthorized(error):
