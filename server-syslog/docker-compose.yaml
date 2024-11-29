@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  rsyslog:
+    image: server-syslog:latest
+    container_name: rsyslog
+    restart: unless-stopped
+    ports:
+      - "10514:514/tcp"
+      - "10514:514/udp"
+    volumes:
+      - ${PWD}/etc/rsyslog.conf:/etc/rsyslog.conf:ro
+      - ${PWD}/etc/rsyslog.d:/etc/rsyslog.d:ro
+      - ${PWD}/etc/logrotate.d:/etc/logrotate.d:ro
+      - ${PWD}/logs:/var/log/remote-logs
+    environment:
+      TZ: "UTC"
