@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  python-app:
+    image: data-gen:latest
+    container_name: python-app
+    restart: always
+    environment:
+      - MONGO_USERNAME=sa
+      - MONGO_PASSWORD=Password123
+      - MONGO_AUTH_DATABASE=admin
+      - MONGO_HOST=mongo-11
+      - MONGO_PORT=27017
+    networks:
+      - "mongo_mynetwork"
+networks:
+  mongo_mynetwork:
+    external: true

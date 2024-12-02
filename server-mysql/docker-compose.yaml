@@ -16,4 +16,3 @@ services:
     volumes:
       - ${PWD}/my-db:/var/lib/mysql
       - ${PWD}/conf:/etc/mysql/conf.d
-

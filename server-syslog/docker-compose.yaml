@@ -2,6 +2,13 @@ version: '3.9'
 
 services:
   rsyslog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+      additional_contexts:
+        app: docker-image://server-syslog:latest
+
     image: server-syslog:latest
     container_name: rsyslog
     restart: unless-stopped
